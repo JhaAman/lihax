@@ -18,12 +18,11 @@ def gradient_descent(x_val_mat, y_val_mat, theta, iterations, alpha):
     for i in range(0, iterations):
         HY = (theta * x_val_mat) - y_val_mat
         SA = HY * x_val_mat.transpose()
-        print SA
         SA *= alpha/m
         theta = theta - SA
     return theta
 
-def main(degree=1, iterations=1500, learning_rate=0.01):
+def main(degree=3, iterations=150000, learning_rate=0.0000001):
     theta = "0 "*(degree+1)
     theta = np.matrix(theta)
     xvals, yvals = np.loadtxt("ex1data1.txt", delimiter=",", unpack=True)
