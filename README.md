@@ -1,6 +1,8 @@
 # lihax
 Aman, Midori, Yifan and Jacob's Lihacks 2016 project. 
 
+## Unity Installation:  
+  
 ## Python Installation:  
 
 1. Make sure that you have the latest version of [Python 2.7](https://www.python.org/downloads/) installed. It's important that you have Python 2.7 installed, and **NOT** Python 3.  
@@ -16,5 +18,3 @@ Aman, Midori, Yifan and Jacob's Lihacks 2016 project.
 1. Be sure to set the Python executable inside the `[Environment Folder]\Scripts` directory as your Python interpreter if you are using an IDE.  
 
 Refer to [this guide](http://docs.python-guide.org/en/latest/dev/virtualenvs/) for troubleshooting! 
-
-## Unity Installation:  
