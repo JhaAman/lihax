@@ -14,15 +14,18 @@ def compute_cost(x_val_mat, y_val_mat, theta):
     return S/(2*m)  # J (cost) value
 
 def gradient_descent(x_val_mat, y_val_mat, theta, iterations, alpha):
+    print "Performing gradient descent... "
     m = y_val_mat.size
     for i in range(0, iterations):
         HY = (theta * x_val_mat) - y_val_mat
         SA = HY * x_val_mat.transpose()
         SA *= alpha/m
         theta = theta - SA
+        if i%(iterations/100) == 0:
+            print str((float(i)/float(iterations))*100)+"% finished... "
     return theta
 
-def main(degree=3, iterations=150000, learning_rate=0.0000001):
+def main(degree=2, iterations=1500000, learning_rate=0.0001):
     theta = "0 "*(degree+1)
     theta = np.matrix(theta)
     xvals, yvals = np.loadtxt("ex1data1.txt", delimiter=",", unpack=True)
@@ -43,6 +46,7 @@ def main(degree=3, iterations=150000, learning_rate=0.0000001):
     for l in range(1, len(theta_new)):
         function += theta_new[l]*(template**l)
     plot_data(template, function, "b-", 6.0)
+    print "Plotting data... "
     plt.show()
 
 if __name__=="__main__":
