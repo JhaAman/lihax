@@ -1,0 +1,68 @@
+﻿using UnityEngine;
+using System.Collections;
+
+[RequireComponent (typeof (LineRenderer))]
+public class LaserSight : MonoBehaviour {
+
+	public float currentDistance = 0;
+	public float currentRotation;
+
+	public Transform pointOfOrigin;
+
+	public bool LaserVisible = false;
+	private LineRenderer lr;
+
+	public float totalAngleDesired = 270f;
+	public float angleIncrement = .5f;
+
+	public Vector2[] distances;
+
+	void Start () {
+		lr = GetComponent<LineRenderer>();
+		SwitchToTurnRight();
+	}
+
+	void Update () {
+		RaycastHit Hit;
+
+		/*if (Physics.Raycast(pointOfOrigin.position, pointOfOrigin.forward, out Hit)) {
+			currentDistance = Hit.distance;
+			if(Hit.collider){
+				//lr.SetPosition(1, new Vector3 (0, 0, currentDistance));
+			}
+		} else {
+			currentDistance = 0;
+			//lr.SetPosition(1, new Vector3 (0, 0, 5000));
+		}*/
+
+		//Angle 0 is set at the center, so this takes the desired angle and goes -half of it
+		//then changes the point of origin's rotation to match that initial angle
+		Vector3 initialFrameAngleVector = pointOfOrigin.localEulerAngles;
+		float currentAngle = -0.5f * totalAngleDesired;
+		initialFrameAngleVector.y = currentAngle;
+		pointOfOrigin.localEulerAngles = initialFrameAngleVector;
+
+		int totalAngleIncremented = (float) totalAngleDesired / angleIncrement; //i.e: 270 into half angles - 270/.5 = 540
+
+		for (x = 0; x < totalAngleIncremented; x++) {
+			//send a raycast at current angle
+			if (Physics.Raycast(pointOfOrigin.position, pointOfOrigin.forward, out Hit)) {
+				currentDistance = Hit.distance;
+				//assign distance to the Vector2 list:
+				distances[x] = new Vector2(currentAngle, currentDistance);
+			} else {
+				Debug.LogError("There isn't an object in front of me. What is going on.");
+			}
+
+			//increment pointOfOrigin's angle rotation by increment amount
+			Vector3 settingAngleVector = pointOfOrigin.localEulerAngles;
+			currentAngle = currentAngle + angleIncrement;
+			settingAngleVector.y = currentAngle;
+			pointOfOrigin.localEulerAngles = settingAngleVector;
+		}
+	}
+
+	void SwitchToTurnRight() {
+		//start collecting lidar data
+	}
+}
