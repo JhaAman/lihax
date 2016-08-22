@@ -24,12 +24,10 @@ Obj/
 UnityGenerated/
 Library/
 Assets/AssetStoreTools*
-AssetServerCacheV3*
 
 # Unity3D generated meta files
 *.pidb.meta
 *.meta
-*.dll.meta
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
