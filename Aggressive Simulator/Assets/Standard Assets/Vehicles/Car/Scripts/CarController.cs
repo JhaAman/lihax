@@ -39,7 +39,8 @@ namespace UnityStandardAssets.Vehicles.Car
 
         private Quaternion[] m_WheelMeshLocalRotations;
         private Vector3 m_Prevpos, m_Pos;
-        public float m_SteerAngle;
+        public float m_SteerAngle; // ------------------------------ Valuable Variable
+        public float m_CurrentSpeed; // ------------------------------ Valuable Variable
         private int m_GearNum;
         private float m_GearFactor;
         private float m_OldRotation;
@@ -182,12 +183,14 @@ namespace UnityStandardAssets.Vehicles.Car
                     speed *= 2.23693629f;
                     if (speed > m_Topspeed)
                         m_Rigidbody.velocity = (m_Topspeed/2.23693629f) * m_Rigidbody.velocity.normalized;
+                        m_CurrentSpeed = speed;
                     break;
 
                 case SpeedType.KPH:
                     speed *= 3.6f;
                     if (speed > m_Topspeed)
                         m_Rigidbody.velocity = (m_Topspeed/3.6f) * m_Rigidbody.velocity.normalized;
+                        m_CurrentSpeed = speed;
                     break;
             }
         }

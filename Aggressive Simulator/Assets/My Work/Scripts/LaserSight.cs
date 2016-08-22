@@ -16,10 +16,14 @@ public class LaserSight : MonoBehaviour {
 	public float angleIncrement = .5f;
 
 	public Vector2[] distances;
+	int totalAngleIncremented;
 
 	void Start () {
 		lr = GetComponent<LineRenderer>();
 		SwitchToTurnRight();
+
+		totalAngleIncremented = (int) (totalAngleDesired/ angleIncrement); //i.e: 270 into half angles - 270/.5 = 540
+		distances = new Vector2[totalAngleIncremented];
 	}
 
 	void Update () {
@@ -42,14 +46,12 @@ public class LaserSight : MonoBehaviour {
 		initialFrameAngleVector.y = currentAngle;
 		pointOfOrigin.localEulerAngles = initialFrameAngleVector;
 
-		int totalAngleIncremented = (float) totalAngleDesired / angleIncrement; //i.e: 270 into half angles - 270/.5 = 540
-
-		for (x = 0; x < totalAngleIncremented; x++) {
+		for (int i = 0; i < totalAngleIncremented; i++) {
 			//send a raycast at current angle
 			if (Physics.Raycast(pointOfOrigin.position, pointOfOrigin.forward, out Hit)) {
 				currentDistance = Hit.distance;
 				//assign distance to the Vector2 list:
-				distances[x] = new Vector2(currentAngle, currentDistance);
+				distances[i] = new Vector2(currentAngle, currentDistance);
 			} else {
 				Debug.LogError("There isn't an object in front of me. What is going on.");
 			}
