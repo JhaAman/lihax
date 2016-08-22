@@ -19,20 +19,11 @@ ExportedObj/
 *.svd
 
 # Unneeded files and directories
-Aggressive Simulator/Temp
-Aggressive Simulator/Temp/*
-Aggressive Simulator/obj
-Aggressive Simulator/obj/*
-Simulator/ProjectSettings/ProjectVersion.txt
-Aggressive Simulator/Library/ShaderCache
-Aggressive Simulator/Library/ShaderCache/*
-Aggressive Simulator/Library/metadata
-Aggressive Simulator/Library/metadata/*
-Aggressive Simulator/Library/assetDatabase3
-Aggressive Simulator/Library/ScriptMapper
-Aggressive Simulator/Library/ScriptAssemblies
-Aggressive Simulator/Library/ScriptAssemblies/*
-Aggressive Simulator/Library/InspectorExpandedItems.asset
+Temp/
+Obj/
+UnityGenerated/
+Library/
+Assets/AssetStoreTools*
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -44,6 +35,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+*.db
 
 # Compiled Python
 *.pcd
@@ -56,3 +48,6 @@ sysinfo.txt
 # Eclipse stuff
 .project
 .cproject
+
+# Log files
+*.exe0.log
