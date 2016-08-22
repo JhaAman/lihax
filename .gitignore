@@ -18,9 +18,25 @@ ExportedObj/
 *.booproj
 *.svd
 
+# Unneeded files and directories
+Aggressive Simulator/Temp
+Aggressive Simulator/Temp/*
+Aggressive Simulator/obj
+Aggressive Simulator/obj/*
+Simulator/ProjectSettings/ProjectVersion.txt
+Aggressive Simulator/Library/ShaderCache
+Aggressive Simulator/Library/ShaderCache/*
+Aggressive Simulator/Library/metadata
+Aggressive Simulator/Library/metadata/*
+Aggressive Simulator/Library/assetDatabase3
+Aggressive Simulator/Library/ScriptMapper
+Aggressive Simulator/Library/ScriptAssemblies
+Aggressive Simulator/Library/ScriptAssemblies/*
+Aggressive Simulator/Library/InspectorExpandedItems.asset
 
 # Unity3D generated meta files
 *.pidb.meta
+*.meta
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
