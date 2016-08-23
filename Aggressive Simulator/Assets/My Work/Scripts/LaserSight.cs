@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.IO;
+using System;
 
 [RequireComponent (typeof (LineRenderer))]
 public class LaserSight : MonoBehaviour {
@@ -16,7 +18,9 @@ public class LaserSight : MonoBehaviour {
 	public float angleIncrement = .5f;
 
 	public Vector2[] distances;
-	int totalAngleIncremented;
+	int totalAngleIncremented; 
+
+	int frameNumber = 0;
 
 	void Start () {
 		lr = GetComponent<LineRenderer>();
@@ -27,6 +31,7 @@ public class LaserSight : MonoBehaviour {
 	}
 
 	void Update () {
+		var fileName = "Frame.txt";
 		RaycastHit Hit;
 
 		/*if (Physics.Raycast(pointOfOrigin.position, pointOfOrigin.forward, out Hit)) {
@@ -46,25 +51,32 @@ public class LaserSight : MonoBehaviour {
 		initialFrameAngleVector.y = currentAngle;
 		pointOfOrigin.localEulerAngles = initialFrameAngleVector;
 
-		for (int i = 0; i < totalAngleIncremented; i++) {
-			//send a raycast at current angle
-			if (Physics.Raycast(pointOfOrigin.position, pointOfOrigin.forward, out Hit)) {
-				currentDistance = Hit.distance;
-				//assign distance to the Vector2 list:
-				distances[i] = new Vector2(currentAngle, currentDistance);
-			} else {
-				Debug.LogError("There isn't an object in front of me. What is going on.");
-			}
+		using (StreamWriter sw = new StreamWriter (fileName)) {
+			for (int i = 0; i < totalAngleIncremented; i++) {
+				//send a raycast at current angle
+				if (Physics.Raycast (pointOfOrigin.position, pointOfOrigin.forward, out Hit)) {
+					currentDistance = Hit.distance;
+					//assign distance to the Vector2 list:
+					distances [i] = new Vector2 (currentAngle, currentDistance);
+					sw.Write (distances [i].x);
+					sw.Write (",");
+					sw.WriteLine (distances [i].y);
+				} else {
+					Debug.LogError ("There isn't an object in front of me. What is going on.");
+				}
 
-			//increment pointOfOrigin's angle rotation by increment amount
-			Vector3 settingAngleVector = pointOfOrigin.localEulerAngles;
-			currentAngle = currentAngle + angleIncrement;
-			settingAngleVector.y = currentAngle;
-			pointOfOrigin.localEulerAngles = settingAngleVector;
+				//increment pointOfOrigin's angle rotation by increment amount
+				Vector3 settingAngleVector = pointOfOrigin.localEulerAngles;
+				currentAngle = currentAngle + angleIncrement;
+				settingAngleVector.y = currentAngle;
+				pointOfOrigin.localEulerAngles = settingAngleVector;
+			}
 		}
+
 	}
 
 	void SwitchToTurnRight() {
 		//start collecting lidar data
 	}
+
 }
