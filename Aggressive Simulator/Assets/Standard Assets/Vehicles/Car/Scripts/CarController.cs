@@ -1,8 +1,13 @@
 using System;
+using System.Net;
+using System.Net.Sockets;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace UnityStandardAssets.Vehicles.Car
+
 {
+
     internal enum CarDriveType
     {
         FrontWheelDrive,
@@ -55,6 +60,13 @@ namespace UnityStandardAssets.Vehicles.Car
         public float MaxSpeed{get { return m_Topspeed; }}
         public float Revs { get; private set; }
         public float AccelInput { get; private set; }
+		public byte error;
+		public int hostId;
+		public int connectId;
+		public Socket handler;
+		public IPAddress hostIP;
+		public IPEndPoint ep;
+
 
         // Use this for initialization
         private void Start()
@@ -70,7 +82,34 @@ namespace UnityStandardAssets.Vehicles.Car
 
             m_Rigidbody = GetComponent<Rigidbody>();
             m_CurrentTorque = m_FullTorqueOverAllWheels - (m_TractionControl*m_FullTorqueOverAllWheels);
+
+			handler = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+			hostIP = (Dns.GetHostEntry("192.168.1.244")).AddressList[0];
+			ep = new IPEndPoint(hostIP, 4510);
+			handler.Connect(ep); 
+
+//			if (connectId != 0) {
+//				byte[] msg = BitConverter.GetBytes (CurrentSpeed);
+//				print (msg);
+//				NetworkTransport.Send (hostId, connectId, 0, msg, 4, out error);
+//			} else {
+//				print ("CONNECTION ERROR!");
+//			}
+			
         }
+
+
+		void Update() {
+
+			byte[] msg = new byte[8];
+			for (int i = 0; i < 4; i++) {
+				msg [i] = BitConverter.GetBytes(CurrentSpeed) [i];
+			}
+			for (int i = 0; i < 4; i++) {
+				msg [i+4] = BitConverter.GetBytes(CurrentSteerAngle) [i];
+			}
+			handler.Send (msg);
+		}
 
 
         private void GearChanging()

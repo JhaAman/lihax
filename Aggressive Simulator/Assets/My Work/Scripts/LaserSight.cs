@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.IO;
 using System;
+using System.Net;
+using System.Net.Sockets;
 
 [RequireComponent (typeof (LineRenderer))]
 public class LaserSight : MonoBehaviour {
@@ -22,12 +25,16 @@ public class LaserSight : MonoBehaviour {
 
 	int frameNumber = 0;
 
+	Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
 	void Start () {
 		lr = GetComponent<LineRenderer>();
 		SwitchToTurnRight();
 
 		totalAngleIncremented = (int) (totalAngleDesired/ angleIncrement); //i.e: 270 into half angles - 270/.5 = 540
 		distances = new Vector2[totalAngleIncremented];
+
+
 	}
 
 	void Update () {
@@ -71,6 +78,16 @@ public class LaserSight : MonoBehaviour {
 				settingAngleVector.y = currentAngle;
 				pointOfOrigin.localEulerAngles = settingAngleVector;
 			}
+				
+		}
+
+	}
+
+	void OnDisable() {
+		var fileName = "Frame.txt";
+
+		using (StreamWriter sw = new StreamWriter (fileName)) {
+			sw.WriteLine ("END");
 		}
 
 	}

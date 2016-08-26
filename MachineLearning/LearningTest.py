@@ -1,5 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import socket, struct
+
+def read_udp_data():
+    host_ip = socket.gethostname()
+    port = 4510
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.bind((host_ip, port))
+    while True:
+        packet = sock.recvfrom(65565)[0]
+        # print repr(packet)
+        print "Current Speed: " + str("%.2f" % struct.unpack("f", packet[0:4])[0])
+        print "Current Steering Angle: " + str("%.2f" % struct.unpack("f", packet[4:8])[0])
 
 def plot_data(x_vals, y_vals, t, ms, x_label="Population", y_label="Profit"):
     plt.plot(x_vals, y_vals, t, markersize=ms)
@@ -50,4 +62,5 @@ def main(degree=2, iterations=1500000, learning_rate=0.0001):
     plt.show()
 
 if __name__=="__main__":
-    main()
+    # main()
+    read_udp_data()
