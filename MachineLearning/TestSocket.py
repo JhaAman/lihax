@@ -6,9 +6,9 @@ def send_udp_data():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.connect((host_ip, port))
     while True:
-        msg = -25.54
-        message = struct.pack("f", msg)
+        message = struct.pack("f", 1.23)
         print repr(message)
+        # print struct.unpack("4s", message)
         sock.send(message)
         time.sleep(1)
 

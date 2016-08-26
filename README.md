@@ -13,7 +13,7 @@ Aman, Midori, Yifan and Jacob's Lihacks 2016 project.
 
 1. Run `pip install virtualenv` if you don't already see it when you run `pip list`. Create a folder somewhere on your computer (it doesn't matter where) and cd there using cmd. This directory will contain your Python executables and libraries (or in case you're using an IDE, an interpreter for your project). Type `virtualenv` and your Python environment will be created.  
 
-1. While in your environment folder, run `\Scripts\activate` and you should now see the command line heading change to the name of your environment folder. Copy the file `requirements.txt` from the main repo directory into your environment folder and while in your environment type `pip install -r requirements.txt`, and you should now have all of the libraries needed in your environment. You can always check the libraries you have by running `pip list`.  
+1. While in your environment folder, run `\Scripts\activate` and you should now see the command line heading change to the name of your environment folder. Copy the file `requirements.txt` from the learn repo directory into your environment folder and while in your environment type `pip install -r requirements.txt`, and you should now have all of the libraries needed in your environment. You can always check the libraries you have by running `pip list`.
 
 1. Be sure to set the Python executable inside the `[Environment Folder]\Scripts` directory as your Python interpreter if you are using an IDE.  
 

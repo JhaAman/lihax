@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -84,17 +85,9 @@ namespace UnityStandardAssets.Vehicles.Car
             m_CurrentTorque = m_FullTorqueOverAllWheels - (m_TractionControl*m_FullTorqueOverAllWheels);
 
 			handler = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-			hostIP = (Dns.GetHostEntry("192.168.1.244")).AddressList[0];
+			hostIP = (Dns.GetHostEntry("192.168.1.149")).AddressList[0];
 			ep = new IPEndPoint(hostIP, 4510);
 			handler.Connect(ep); 
-
-//			if (connectId != 0) {
-//				byte[] msg = BitConverter.GetBytes (CurrentSpeed);
-//				print (msg);
-//				NetworkTransport.Send (hostId, connectId, 0, msg, 4, out error);
-//			} else {
-//				print ("CONNECTION ERROR!");
-//			}
 			
         }
 
@@ -108,6 +101,13 @@ namespace UnityStandardAssets.Vehicles.Car
 			for (int i = 0; i < 4; i++) {
 				msg [i+4] = BitConverter.GetBytes(CurrentSteerAngle) [i];
 			}
+			handler.Send (msg);
+		}
+
+		void OnDisable() {
+
+			String stop = "STOP";
+			byte[] msg = Encoding.ASCII.GetBytes (stop);
 			handler.Send (msg);
 		}
 
