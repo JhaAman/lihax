@@ -85,13 +85,22 @@ namespace UnityStandardAssets.Vehicles.Car
             m_CurrentTorque = m_FullTorqueOverAllWheels - (m_TractionControl*m_FullTorqueOverAllWheels);
 
 			handler = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-			//hostIP = (Dns.GetHostAddresses("10.89.1.172"))[0];
+
+// 			A better way of obtaining your IP address **ONLY IF YOU ARE CONNECTED TO A NETWORK**: 
+
 			IPAddress[] ipv4Addresses = Array.FindAll(
 				Dns.GetHostEntry(Dns.GetHostName()).AddressList,
 				a => a.AddressFamily == AddressFamily.InterNetwork);
 			hostIP = ipv4Addresses [0];
-			print (hostIP);
+
+//			This will setup your socket if you **ARE NOT** connected to any network: 
+
+//			hostIP = IPAddress.Parse("127.0.0.1");
+
+			print ("Host name: " + Dns.GetHostName());
+			print ("IP address: " + hostIP);
 			ep = new IPEndPoint(hostIP, 4510);
+			print ("Opening a udp socket at: " + ep);
 			handler.Connect(ep); 
 			
         }
