@@ -85,7 +85,12 @@ namespace UnityStandardAssets.Vehicles.Car
             m_CurrentTorque = m_FullTorqueOverAllWheels - (m_TractionControl*m_FullTorqueOverAllWheels);
 
 			handler = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-			hostIP = (Dns.GetHostEntry("192.168.1.149")).AddressList[0];
+			//hostIP = (Dns.GetHostAddresses("10.89.1.172"))[0];
+			IPAddress[] ipv4Addresses = Array.FindAll(
+				Dns.GetHostEntry(Dns.GetHostName()).AddressList,
+				a => a.AddressFamily == AddressFamily.InterNetwork);
+			hostIP = ipv4Addresses [0];
+			print (hostIP);
 			ep = new IPEndPoint(hostIP, 4510);
 			handler.Connect(ep); 
 			

@@ -13,7 +13,7 @@ def main():
             plt.ioff()
             break
         for data in f.readlines():
-            theta_vals.append(np.deg2rad(float(data.split(',')[0]) + 90.0))
+            theta_vals.append(np.deg2rad(-1*float(data.split(',')[0]) + 90.0))
             r_vals.append(float(data.split(',')[1]))
         # graph.plot(theta_vals, r_vals)
         plt.scatter(theta_vals, r_vals)
