@@ -603,6 +603,8 @@ MonoBehaviour:
   - {fileID: 1000010500584532, guid: 1100655c73a48f1488871475fbdcd4ef, type: 2}
   courseObjects:
   - {fileID: 1000013968397576, guid: da09d02bec9a09a4f855f7e515188f12, type: 2}
+  - {fileID: 1000011929179350, guid: 4f3dd0be16b7dd142bf70f5c0b8f9ec1, type: 2}
+  - {fileID: 1000011528735054, guid: 906d4575953c7aa49bc09af72b5d0f8d, type: 2}
   objectDensity: 100
   parentOfObstacles: {fileID: 1722286183}
 --- !u!4 &685989543
@@ -683,7 +685,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400050, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6500000, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}
       propertyPath: m_Material
@@ -770,7 +772,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}
       propertyPath: m_CarDriveType
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}
       propertyPath: m_Topspeed
@@ -907,7 +909,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: baec086904791744185aaa07a6cf55c2, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: baec086904791744185aaa07a6cf55c2, type: 2}
       propertyPath: m_Target
@@ -1049,7 +1051,7 @@ Transform:
   - {fileID: 653687422}
   - {fileID: 417480335}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 3
 --- !u!114 &1722286185
 MonoBehaviour:
   m_ObjectHideFlags: 0
