@@ -67,6 +67,8 @@ namespace UnityStandardAssets.Vehicles.Car
 		public Socket dataSender;
 		public IPAddress hostIP;
 		public IPEndPoint ep;
+		public Socket dataReceiver;
+		public IPEndPoint enp;
 
 
         // Use this for initialization
@@ -85,7 +87,7 @@ namespace UnityStandardAssets.Vehicles.Car
             m_CurrentTorque = m_FullTorqueOverAllWheels - (m_TractionControl*m_FullTorqueOverAllWheels);
 
 			dataSender = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
+			dataReceiver = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 // 			A better way of obtaining your IP address **ONLY IF YOU ARE CONNECTED TO A NETWORK**: 
 
 			IPAddress[] ipv4Addresses = Array.FindAll(
@@ -97,17 +99,21 @@ namespace UnityStandardAssets.Vehicles.Car
 
 //			hostIP = IPAddress.Parse("127.0.0.1");
 
-			print ("Host name: " + Dns.GetHostName());
-			print ("IP address: " + hostIP);
 			ep = new IPEndPoint(hostIP, 4510);
-			print ("Opening a udp socket at: " + ep);
+			enp = new IPEndPoint (hostIP, 6510);
+			dataReceiver.Bind (enp);
 			dataSender.Connect(ep); 
 			
         }
 
 
 		void Update() {
-
+			byte[] bytes = new byte[8];
+			print (bytes);
+			int notImportant = dataSender.Receive (bytes);
+			float speed = System.BitConverter.ToSingle(bytes, 0);
+			float steering = System.BitConverter.ToSingle (bytes, 4);
+			Move (steering, speed, speed, 0);
 			byte[] msg = new byte[8];
 			for (int i = 0; i < 4; i++) {
 				msg [i] = BitConverter.GetBytes(CurrentSpeed) [i];
