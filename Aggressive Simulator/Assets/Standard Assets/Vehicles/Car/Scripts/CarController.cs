@@ -64,7 +64,7 @@ namespace UnityStandardAssets.Vehicles.Car
 		public byte error;
 		public int hostId;
 		public int connectId;
-		public Socket handler;
+		public Socket dataSender;
 		public IPAddress hostIP;
 		public IPEndPoint ep;
 
@@ -84,7 +84,7 @@ namespace UnityStandardAssets.Vehicles.Car
             m_Rigidbody = GetComponent<Rigidbody>();
             m_CurrentTorque = m_FullTorqueOverAllWheels - (m_TractionControl*m_FullTorqueOverAllWheels);
 
-			handler = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+			dataSender = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
 // 			A better way of obtaining your IP address **ONLY IF YOU ARE CONNECTED TO A NETWORK**: 
 
@@ -101,7 +101,7 @@ namespace UnityStandardAssets.Vehicles.Car
 			print ("IP address: " + hostIP);
 			ep = new IPEndPoint(hostIP, 4510);
 			print ("Opening a udp socket at: " + ep);
-			handler.Connect(ep); 
+			dataSender.Connect(ep); 
 			
         }
 
@@ -115,14 +115,14 @@ namespace UnityStandardAssets.Vehicles.Car
 			for (int i = 0; i < 4; i++) {
 				msg [i+4] = BitConverter.GetBytes(CurrentSteerAngle) [i];
 			}
-			handler.Send (msg);
+			dataSender.Send (msg);
 		}
 
-		void OnDisable() {
+		void OnApplicationQuit() {
 
 			String stop = "STOP";
 			byte[] msg = Encoding.ASCII.GetBytes (stop);
-			handler.Send (msg);
+			dataSender.Send (msg);
 		}
 
 

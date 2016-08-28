@@ -1,36 +1,75 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import socket, struct, sys
+import socket, struct
 
 def read_udp_data():
     speed_array = []
     angle_array = []
+    lidar_distance_at_zero = []
+    minimum_distance_at_frame = []
+    percentage_below_distance = []  # currently set to 15 meters
+    difference_between_right_and_left_min = []
+    avg_difference_between_right_and_left = []
     # add more variable arrays here
     host_ip = socket.gethostname()
-    port = 4510
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind((host_ip, port))
+    portOne = 4510
+    portTwo = 5520
+    sockOne = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sockTwo = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sockOne.bind((host_ip, portOne))
+    sockTwo.bind((host_ip, portTwo))
     while True:
-        packet = sock.recvfrom(65565)[0]
-        # print repr(packet)
+        packetOne = sockOne.recv(6000)
+        packetTwo = sockTwo.recv(6000)
+        # print repr(packetOne)
         try:
-            if struct.unpack("4s", packet)[0] == "STOP":
-                print struct.unpack("4s", packet)[0]
+            if struct.unpack("4s", packetOne)[0] == "STOP":
+                print struct.unpack("4s", packetOne)[0]
                 break
         except struct.error:
-            try:
-                print "Current Speed: " + str("%.2f" % struct.unpack("f", packet[0:4])[0])
-                speed_array.append(float("%.2f" % struct.unpack("f", packet[0:4])[0]))
-                print "Current Steering Angle: " + str("%.2f" % struct.unpack("f", packet[4:8])[0])
-                angle_array.append(float("%.2f" % struct.unpack("f", packet[4:8])[0]))
-            except struct.error:
-                print "ERROR IN DECODING DATA"
-    sock.close()
+            pass
+        try:
+            print "Current Speed: %.2f" % struct.unpack("2f", packetOne)[0]
+            speed_array.append(float("%.2f" % struct.unpack("2f", packetOne)[0]))
+            print "Current Steering Angle: %.2f" % struct.unpack("2f", packetOne)[1]
+            angle_array.append(float("%.2f" % struct.unpack("2f", packetOne)[1]))
+        except struct.error:
+            pass
+        try:
+            print "Distance In Front: %.2f" % struct.unpack("1080f", packetTwo)[539]
+            lidar_distance_at_zero.append(float("%.2f" % struct.unpack("1080f", packetTwo)[539]))
+        except struct.error:
+            pass
+        try:
+            print "Minimum Distance: %.2f" % min(struct.unpack("1080f", packetTwo))
+            minimum_distance_at_frame.append(float("%.2f" % min(struct.unpack("1080f", packetTwo))))
+        except struct.error:
+            pass
+        try:
+            print "Percentage of Pts Below Distance of 15m: %.2f" % (sum(i < 15 for i in struct.unpack("1080f", packetTwo))/len(struct.unpack("1080f", packetTwo)))
+            percentage_below_distance.append(float("%.2f" % (sum(i < 15 for i in struct.unpack("1080f", packetTwo))/len(struct.unpack("1080f", packetTwo)))))
+        except struct.error:
+            pass
+        try:
+            print "Difference between min on right and left: %.2f" % (min(struct.unpack("1080f", packetTwo)[0:540])-min(struct.unpack("1080f", packetTwo)[540:1080]))
+            difference_between_right_and_left_min.append(float("%.2f" % (min(struct.unpack("1080f", packetTwo)[0:540])-min(struct.unpack("1080f", packetTwo)[540:1080]))))
+        except struct.error:
+            pass
+        try:
+            print "Difference between mean distances on right and left: %.2f" % float(np.mean(struct.unpack("1080f", packetTwo)[0:540])-np.mean(struct.unpack("1080f", packetTwo)[540:1080]))
+            avg_difference_between_right_and_left.append(float("%.2f" % float(np.mean(struct.unpack("1080f", packetTwo)[0:540])-np.mean(struct.unpack("1080f", packetTwo)[540:1080]))))
+        except struct.error:
+            pass
+
+        print "--------------------------------------------------"
+
+    sockOne.close()
+    sockTwo.close()
     print "Finished collecting data\nStarting data analysis... "
-    learn(np.array(speed_array), np.array(angle_array))  # Enter the two sets of data you would like to analyze
+    learn(np.array(speed_array), np.array())  # Enter the two sets of data you would like to analyze
 
 
-def plot_data(x_vals, y_vals, t, ms, x_label="Population", y_label="Profit"):
+def plot_data(y_vals, x_vals, t, ms, x_label="Population", y_label="Profit"):
     plt.plot(x_vals, y_vals, t, markersize=ms)
     plt.axis([0, max(x_vals) + 10, min(y_vals) - 10, max(y_vals) + 10])
     plt.xlabel(x_label)
