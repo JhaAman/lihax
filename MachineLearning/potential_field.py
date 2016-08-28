@@ -21,7 +21,7 @@ class PotentialField():
         self.sockR = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sockS = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sockS.connect((self.host_ip, self.sending_port))
-        self.sockR.bind((self.host_ip, self.recieving_port))
+        self.sockR.bind((self.host_ip, self.receiving_port))
         
         # cumulative speed - used to build up momentum
         self.speed_c = 0
@@ -35,7 +35,7 @@ class PotentialField():
         gradient_y = 0 # sum of dU/dy
         
         # ignore the edges of the lidar FOV, usually noisy
-        for i in range(180, len(ranges) - 180):
+        for i in range(len(ranges) - 180, 180, -1):
             r = ranges[i]
             deg = -(270.0/1080) * i # convert index of range to degree of range
             deg += 225 # lidar FOV starts at -45 deg
@@ -50,9 +50,12 @@ class PotentialField():
         return (gradient_x, gradient_y)
     
     # lidar subscriber callback
-    def receive_lidar(self, STEER_BIAS=0, PUSH_MULTIPLIER=19.5, STEER_GRAD_PROPORTION=1300.0, SPEED_GRAD_PROPORTION=-0.001, MOMENTUM_MU=0.95, UPDATE_INFLUENCE=0.11, REVERSE_SPEED_MULTIPLIER=-2.3, MIN_SPEED_CLAMP=-0.7, MAX_SPEED_CLAMP=3.0):
+    def receive_lidar(self, STEER_BIAS=0, PUSH_MULTIPLIER=19.5, STEER_GRAD_PROPORTION=20.0, SPEED_GRAD_PROPORTION=-0.001, MOMENTUM_MU=0.95, UPDATE_INFLUENCE=0.11, REVERSE_SPEED_MULTIPLIER=-2.3, MIN_SPEED_CLAMP=-0.7, MAX_SPEED_CLAMP=1.0):
         
         while True:
+            f = open("C:/Users/Jacob/workspace/lihax/Aggressive Simulator/Frame.txt")
+            if "END" in f.readline():
+                break
             packet = self.sockR.recvfrom(65565)[0]
             ranges = struct.unpack("1080f", packet)
     
@@ -72,7 +75,7 @@ class PotentialField():
         
             # the speed update at this instance: proportional to gradient magnitude
             # and sign depends of sign of gradient w.r.t y
-            speed = SPEED_GRAD_PROPORTION * grad_magnitude * np.sign(grad_y)
+            speed = (SPEED_GRAD_PROPORTION * grad_magnitude * np.sign(grad_y))*100-194
         
             # update the cumulative momentum using the speed update at this instance.
             # speed_c is multiplied by some constant < 1 to simulate friction and
@@ -100,12 +103,14 @@ class PotentialField():
                     speed_now = MAX_SPEED_CLAMP
 
             # create and publish drive message using steer and speed_c
-            message = struct.pack("2f", speed_now, steer)
+            # print "Speed: " + str(speed)
+            # print "Speed c: " + str(self.speed_c)
+            # print "Speed now: " + str(speed_now)
+            message = struct.pack("2f", speed_now, -steer)
             self.sockS.send(message)
 
-
-
         self.sockR.close()
+        self.sockS.close()
 
 
 pf = PotentialField()

@@ -88,6 +88,7 @@ namespace UnityStandardAssets.Vehicles.Car
 
 			dataSender = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 			dataReceiver = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
 // 			A better way of obtaining your IP address **ONLY IF YOU ARE CONNECTED TO A NETWORK**: 
 
 			IPAddress[] ipv4Addresses = Array.FindAll(
@@ -103,17 +104,26 @@ namespace UnityStandardAssets.Vehicles.Car
 			enp = new IPEndPoint (hostIP, 6510);
 			dataReceiver.Bind (enp);
 			dataSender.Connect(ep); 
+			dataReceiver.ReceiveTimeout = 100;
 			
         }
 
 
 		void Update() {
-			byte[] bytes = new byte[8];
-			print (bytes);
-			int notImportant = dataSender.Receive (bytes);
-			float speed = System.BitConverter.ToSingle(bytes, 0);
-			float steering = System.BitConverter.ToSingle (bytes, 4);
-			Move (steering, speed, speed, 0);
+			byte[] composite = new byte[8];
+			float speed;
+			float steering;
+			try {
+				int size = dataReceiver.Receive(composite);
+				speed = System.BitConverter.ToSingle(composite, 0);
+				steering = System.BitConverter.ToSingle (composite, 4);
+			} catch (SocketException) {
+				print ("NO DATA INPUT; WILL TRY AGAIN");
+				speed = 0.0f;
+				steering = 0.0f;
+			}
+			print ("Speed: " + speed + ", Steering Angle: " + steering);
+			Move (steering, speed, speed, 0); //this is the issue.
 			byte[] msg = new byte[8];
 			for (int i = 0; i < 4; i++) {
 				msg [i] = BitConverter.GetBytes(CurrentSpeed) [i];
@@ -243,6 +253,9 @@ namespace UnityStandardAssets.Vehicles.Car
                     if (speed > m_Topspeed)
                         m_Rigidbody.velocity = (m_Topspeed/2.23693629f) * m_Rigidbody.velocity.normalized;
                         m_CurrentSpeed = speed;
+						if (transform.InverseTransformDirection(m_Rigidbody.velocity).z < 0) {
+							m_CurrentSpeed *= -1;
+						}
                     break;
 
                 case SpeedType.KPH:
@@ -250,6 +263,9 @@ namespace UnityStandardAssets.Vehicles.Car
                     if (speed > m_Topspeed)
                         m_Rigidbody.velocity = (m_Topspeed/3.6f) * m_Rigidbody.velocity.normalized;
                         m_CurrentSpeed = speed;
+						if (transform.InverseTransformDirection(m_Rigidbody.velocity).z < 0) {
+							m_CurrentSpeed *= -1;
+						}
                     break;
             }
         }

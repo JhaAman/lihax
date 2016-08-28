@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import socket, struct
+from SimUI import UI
 
 def read_udp_data():
+    ui = UI()
     speed_array = []
     angle_array = []
     lidar_distance_at_zero = []
@@ -66,7 +68,20 @@ def read_udp_data():
     sockOne.close()
     sockTwo.close()
     print "Finished collecting data\nStarting data analysis... "
-    learn(np.array(speed_array), np.array())  # Enter the two sets of data you would like to analyze
+    theta_speed = []
+    theta_angle = []
+    if ui.get_choice()[0] == "lidar_distance_at_zero":
+        theta_speed = learn(np.array(speed_array), np.array(lidar_distance_at_zero))
+    elif ui.get_choice()[0] == "minimum_distance_at_frame":
+        theta_speed = learn(np.array(speed_array), np.array(minimum_distance_at_frame))
+    elif ui.get_choice()[0] == "percentage_below_distance":
+        theta_speed = learn(np.array(speed_array), np.array(percentage_below_distance))
+    if ui.get_choice()[1] == "difference_between_right_and_left_min":
+        theta_angle = learn(np.array(angle_array), np.array(difference_between_right_and_left_min))
+    elif ui.get_choice()[1] == "avg_difference_between_right_and_left":
+        theta_angle = learn(np.array(angle_array), np.array(avg_difference_between_right_and_left))
+    theta_full = theta_speed + theta_angle
+    move_car(theta_full)
 
 
 def plot_data(y_vals, x_vals, t, ms, x_label="Population", y_label="Profit"):
@@ -128,6 +143,48 @@ def learn(xvals, yvals, degree=3, iterations=1500000, learning_rate=0.01):
     plot_data(template, function, "b-", 6.0)
     print "Plotting data... "
     plt.show()
+    return theta_new
+
+def move_car(theta):
+    ui = UI()
+    host_ip = socket.gethostname()
+    portReceive = 5520
+    portSend = 6510
+    sockReceive = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sockSend = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sockReceive.bind((host_ip, portReceive))
+    sockSend.connect((host_ip, portSend))
+    while True:
+        packet = sockReceive.recv(6000)
+        lidar_array = struct.unpack("1080f", packet)
+        function = [0,0]
+        if ui.get_choice()[0] == "lidar_distance_at_zero":
+            var = lidar_array[539]
+            function[0] = theta[0]
+            for l in range(1, len(theta)):
+                function[0] += theta[l] * (var ** l)
+        elif ui.get_choice()[0] == "minimum_distance_at_frame":
+            var = min(lidar_array)
+            function[0] = theta[0]
+            for l in range(1, len(theta)):
+                function[0] += theta[l] * (var ** l)
+        elif ui.get_choice()[0] == "percentage_below_distance":
+            var = sum(i < 15 for i in lidar_array)/len(lidar_array)
+            function[0] = theta[0]
+            for l in range(1, len(theta)):
+                function[0] += theta[l] * (var ** l)
+        if ui.get_choice()[1] == "difference_between_right_and_left_min":
+            var = min(lidar_array[0:540]) - min(lidar_array[540:1080])
+            function[1] = theta[0]
+            for l in range(1, len(theta)):
+                function[1] += theta[l] * (var ** l)
+        elif ui.get_choice()[1] == "avg_difference_between_right_and_left":
+            var = float(np.mean(lidar_array[0:540])-np.mean(lidar_array[540:1080]))
+            function[1] = theta[0]
+            for l in range(1, len(theta)):
+                function[1] += theta[l] * (var ** l)
+        msg = struct.pack("2f", function[0], function[1])
+        sockSend.send(msg)
 
 if __name__=="__main__":
     read_udp_data()

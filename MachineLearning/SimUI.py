@@ -16,6 +16,8 @@ class UI:
         self.var1 = IntVar()
         self.var2 = IntVar()
 
+        self.choice = []
+
         Label(self.topFrame, text="Choose a variable to compare against speed:").grid(row=0)
         Radiobutton(self.topFrame, text="lidar distance at zero", variable=self.var1, value=1).grid(row=1)
         Radiobutton(self.topFrame, text="minimum distance at frame", variable=self.var1, value=2).grid(row=2)
@@ -45,7 +47,11 @@ class UI:
 
     def callback(self):
         self.root.destroy()
-        print [self.getSpeedVar(), self.getSteeringVar()]
+        self.choice = [self.getSpeedVar(), self.getSteeringVar()]
+        return [self.getSpeedVar(), self.getSteeringVar()]
+
+    def get_choice(self):
+        return self.choice
 
 
 ui = UI()
