@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import math, socket, struct, numpy as np
+import math, socket, struct, numpy as np, sys
 
 
 # Get the gradient of the potential of an obstacle
@@ -50,12 +50,9 @@ class PotentialField():
         return (gradient_x, gradient_y)
     
     # lidar subscriber callback
-    def receive_lidar(self, STEER_BIAS=0, PUSH_MULTIPLIER=19.5, STEER_GRAD_PROPORTION=20.0, SPEED_GRAD_PROPORTION=-0.001, MOMENTUM_MU=0.95, UPDATE_INFLUENCE=0.11, REVERSE_SPEED_MULTIPLIER=-2.3, MIN_SPEED_CLAMP=-0.7, MAX_SPEED_CLAMP=1.0):
+    def receive_lidar(self, STEER_BIAS=0, PUSH_MULTIPLIER=19.7, STEER_GRAD_PROPORTION=20.0, SPEED_GRAD_PROPORTION=-0.001, MOMENTUM_MU=0.95, UPDATE_INFLUENCE=0.11, REVERSE_SPEED_MULTIPLIER=-2.3, MIN_SPEED_CLAMP=-0.9, MAX_SPEED_CLAMP=1.0):
         
         while True:
-            f = open("C:/Users/Jacob/workspace/lihax/Aggressive Simulator/Frame.txt")
-            if "END" in f.readline():
-                break
             packet = self.sockR.recvfrom(65565)[0]
             ranges = struct.unpack("1080f", packet)
     
@@ -94,7 +91,7 @@ class PotentialField():
                 if self.speed_c > -0.2:
                     speed_now = -0.7
                 steer *= REVERSE_SPEED_MULTIPLIER
-                print("reversing")
+                # print("reversing")
         
             if self.speed_c < MIN_SPEED_CLAMP:
                     speed_now = MIN_SPEED_CLAMP
@@ -111,6 +108,8 @@ class PotentialField():
 
         self.sockR.close()
         self.sockS.close()
+        print "STOPPED!!!"
+        sys.exit(1)
 
 
 pf = PotentialField()

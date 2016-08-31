@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.45129573, g: 0.5012445, b: 0.5750631, a: 1}
+  m_IndirectSpecularColor: {r: 0.4512955, g: 0.5012442, b: 0.5750624, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -443,7 +443,7 @@ MonoBehaviour:
   pointOfOrigin: {fileID: 903403032}
   LaserVisible: 0
   totalAngleDesired: 270
-  angleIncrement: 0.5
+  angleIncrement: 0.25
   distances: []
 --- !u!120 &559293484
 LineRenderer:
@@ -590,22 +590,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 685989541}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9ad3a9f4bb53fd44a3c9a9c28a22334, type: 3}
+  m_Script: {fileID: 11500000, guid: 53d01fc72e55e9b48952b0ee35ea22a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ModeText: {fileID: 1796400365}
   specificCourseSelectionNumber: 0
-  fieldObstacles:
-  - {fileID: 1000010973246336, guid: 66dd2f0266922a84e963db76e5cb6f7c, type: 2}
-  - {fileID: 1000010873018446, guid: 27db33fd3bfe2bf48a4a6eb979ca8697, type: 2}
-  - {fileID: 1000013146479998, guid: 6f023f3f4badd7c40af60c175f4ad2b6, type: 2}
-  - {fileID: 1000012459015982, guid: a85cf8a07c0fe6f4580ba11172a260df, type: 2}
-  - {fileID: 1000010500584532, guid: 1100655c73a48f1488871475fbdcd4ef, type: 2}
+  fieldObstacles: []
   courseObjects:
-  - {fileID: 1000013968397576, guid: da09d02bec9a09a4f855f7e515188f12, type: 2}
-  - {fileID: 1000011929179350, guid: 4f3dd0be16b7dd142bf70f5c0b8f9ec1, type: 2}
-  - {fileID: 1000011528735054, guid: 906d4575953c7aa49bc09af72b5d0f8d, type: 2}
-  objectDensity: 100
+  - {fileID: 1000011929179350, guid: dafe10f4c4fca5f458fadf9b49d3c3e0, type: 2}
+  objectDensity: 0
   parentOfObstacles: {fileID: 1722286183}
 --- !u!4 &685989543
 Transform:
@@ -789,6 +782,10 @@ Prefab:
     - target: {fileID: 11400002, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}
       propertyPath: m_SteerHelper
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400022, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}

@@ -57,7 +57,8 @@ namespace UnityStandardAssets.Vehicles.Car
         public bool Skidding { get; private set; }
         public float BrakeInput { get; private set; }
         public float CurrentSteerAngle{ get { return m_SteerAngle; }}
-        public float CurrentSpeed{ get { return m_Rigidbody.velocity.magnitude*2.23693629f; }}
+//        public float CurrentSpeed{ get { return m_Rigidbody.velocity.magnitude*2.23693629f; }}
+		public float CurrentSpeed{ get { return m_CurrentSpeed; }}
         public float MaxSpeed{get { return m_Topspeed; }}
         public float Revs { get; private set; }
         public float AccelInput { get; private set; }
@@ -110,6 +111,9 @@ namespace UnityStandardAssets.Vehicles.Car
 
 
 		void Update() {
+
+			// Getting drive data
+
 			byte[] composite = new byte[8];
 			float speed;
 			float steering;
@@ -122,8 +126,11 @@ namespace UnityStandardAssets.Vehicles.Car
 				speed = 0.0f;
 				steering = 0.0f;
 			}
-			print ("Speed: " + speed + ", Steering Angle: " + steering);
+//			print ("Speed: " + speed + ", Steering Angle: " + steering);
 			Move (steering, speed, speed, 0); //this is the issue.
+
+			// Sending drive data 
+
 			byte[] msg = new byte[8];
 			for (int i = 0; i < 4; i++) {
 				msg [i] = BitConverter.GetBytes(CurrentSpeed) [i];
@@ -132,6 +139,7 @@ namespace UnityStandardAssets.Vehicles.Car
 				msg [i+4] = BitConverter.GetBytes(CurrentSteerAngle) [i];
 			}
 			dataSender.Send (msg);
+
 		}
 
 		void OnApplicationQuit() {

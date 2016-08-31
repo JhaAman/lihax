@@ -111,7 +111,7 @@ def gradient_descent(x_val_mat, y_val_mat, theta, iterations, alpha):
             raise ValueError("Smaller learning rate needed!")
     return theta
 
-def learn(xvals, yvals, degree=3, iterations=1500000, learning_rate=0.01):
+def learn(xvals, yvals, degree=3, iterations=150000, learning_rate=0.01):
     succeeded = False
     theta = "0 "*degree + "0"
     theta = np.matrix(theta)
@@ -161,27 +161,27 @@ def move_car(theta):
         if ui.get_choice()[0] == "lidar_distance_at_zero":
             var = lidar_array[539]
             function[0] = theta[0]
-            for l in range(1, len(theta)):
+            for l in range(1, len(theta)/2):
                 function[0] += theta[l] * (var ** l)
         elif ui.get_choice()[0] == "minimum_distance_at_frame":
             var = min(lidar_array)
             function[0] = theta[0]
-            for l in range(1, len(theta)):
+            for l in range(1, len(theta)/2):
                 function[0] += theta[l] * (var ** l)
         elif ui.get_choice()[0] == "percentage_below_distance":
             var = sum(i < 15 for i in lidar_array)/len(lidar_array)
             function[0] = theta[0]
-            for l in range(1, len(theta)):
+            for l in range(1, len(theta)/2):
                 function[0] += theta[l] * (var ** l)
         if ui.get_choice()[1] == "difference_between_right_and_left_min":
             var = min(lidar_array[0:540]) - min(lidar_array[540:1080])
             function[1] = theta[0]
-            for l in range(1, len(theta)):
+            for l in range(len(theta)/2, len(theta)):
                 function[1] += theta[l] * (var ** l)
         elif ui.get_choice()[1] == "avg_difference_between_right_and_left":
             var = float(np.mean(lidar_array[0:540])-np.mean(lidar_array[540:1080]))
             function[1] = theta[0]
-            for l in range(1, len(theta)):
+            for l in range(len(theta)/2, len(theta)):
                 function[1] += theta[l] * (var ** l)
         msg = struct.pack("2f", function[0], function[1])
         sockSend.send(msg)
